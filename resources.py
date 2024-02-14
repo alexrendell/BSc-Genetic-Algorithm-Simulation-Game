@@ -20,5 +20,17 @@ class Resources:
     def add_gold(self, amount):
         self.gold += amount
         
+    def get_wood(self):
+        return self.wood
+    
+    def get_coal(self):
+        return self.coal
+    
+    def get_metal(self):
+        return self.metal
+    
+    def get_gold(self):
+        return self.gold
+        
     def all_resources(self):
         return f"Wood: {self.wood} Coal: {self.coal} Metal: {self.metal} Gold: {self.gold}"

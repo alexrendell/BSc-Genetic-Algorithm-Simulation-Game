@@ -1,52 +1,12 @@
 import random
 
-def foo(x,y,z):
-    return 6*x**3 + 9*y** 2 + 90*z - 25
+all_villages = []
+#all_villages.sort(key=lambda x: x[1])
+#all_villages.reverse()
 
-def fitness(x,y,z):
-    ans = foo(x,y,z)
 
-    if ans == 0:
-        return 99999
-    else:
-        return abs(1/ans)
+def fitness(name, total_resources):
     
-# generate solutions
-solutions = []
-for a in range(1000):
-    solutions.append( (random.uniform(0, 10000),
-                       random.uniform(0, 10000),
-                       random.uniform(0, 10000)) )
+    #total_resources = wood + coal + metal + gold
     
-for i in range(1000):
-    rankedsolutions = []
-    for s in solutions:
-        #the 3 solutions + s which is the fitness of the solution
-        rankedsolutions.append( (fitness(s[0], s[1], s[2]), s) )
-    rankedsolutions.sort()
-    rankedsolutions.reverse()
-    
-    print(f"=== Gen {i} best solutions === ")
-    print(rankedsolutions[0],[1],[2])
-    
-    if rankedsolutions[0][0] > 999:
-        break
-    
-    bestsolutions = rankedsolutions[:100]
-    
-    elements = []
-    for s in bestsolutions:
-        elements.append(s[1][0])
-        elements.append(s[1][1])
-        elements.append(s[1][2])
-        
-    newGen = []
-    for _ in range(1000):
-        e1 = random.choice(elements) * random.uniform(0.99,1.01)
-        e2 = random.choice(elements) * random.uniform(0.99,1.01)
-        e3 = random.choice(elements) * random.uniform(0.99,1.01)
-        
-        newGen.append( (e1, e2, e3) )
-
-    solutions = newGen
-a
+    all_villages.append( (name,total_resources) )
