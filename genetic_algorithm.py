@@ -1,3 +1,4 @@
+'''
 class GeneticAlgorithm:
     
     def __init__(self, population_size):
@@ -24,3 +25,4 @@ class GeneticAlgorithm:
     # Calculate fitness based on defensive performance
     def calculate_defensive_fitness(village):
         return (village.successful_defenses)
+'''

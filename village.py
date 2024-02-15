@@ -3,22 +3,41 @@ from attacking_items import Attacking
 from defensive_items import Defensive
 from resources import Resources
 import algorithm
+import harvesting_items
+import buildings
 
 
 class Village:
-    def __init__(self, name, population):
+    def __init__(self, name, resources, population):
         self.name = name
         self.population = population
-        self.res = Resources(self)
-        self.att = Attacking(self)
+        self.resources = resources
+        self.owned_buildings = []
+        self.turn = 0
+        #self.res = Resources(self)
+        #self.att = Attacking(self)
         #self.defe = Defensive(self)
         #self.harv = Harvesting(self)
-        self.res.add_wood(100)
-        self.att.buy_tank()
-        total_resouces = self.res.get_coal
-        algorithm.fitness(self,name, total_resouces)
+        #self.res.add_wood(100)
+        #self.att.buy_tank()
+        #total_resouces = self.res.get_coal
+        #algorithm.fitness(self,name, total_resouces)
         #algorithm.fitness(name,self.res.get_wood,self.res.get_coal,
                           #self.res.get_metal,self.res.get_gold)
+        
+    #Purchasing a building
+    def buy_building(self, building):
+        #Check if village has enough resources
+        building = buildings.all_buildings[1]
+        if self.resources >= building.cost:
+            #Deduct cost from village resources
+            self.resources -= building.cost
+            #Add building to list of harvesting buldings
+            self.owned_harvesting_buildings.append(building)
+            print(f"{self.name} purchased {building.name}")
+        else:
+            print(f"{self.name} has insufficient resources to buy {building.name}")
+            
         
 
     def fire_power(self):

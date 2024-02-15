@@ -1,3 +1,4 @@
+'''
 from village import Village
 import algorithm
 from resources import Resources
@@ -15,3 +16,17 @@ ranked = []
 ranked = algorithm.all_villages
 
 #print(ranked)
+'''
+
+from village import Village
+
+def main():
+    
+    village_a = Village("village A", 100, 10)
+    village_b = Village("village B", 80, 8)
+    
+    village_a.buy_harvesting_building(1)
+    
+if __name__ == "__main__":
+    main()
+
