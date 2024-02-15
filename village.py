@@ -1,9 +1,4 @@
-from harvesting_items import Harvesting
-from attacking_items import Attacking
-from defensive_items import Defensive
 from resources import Resources
-import algorithm
-import harvesting_items
 import buildings
 
 
@@ -26,19 +21,17 @@ class Village:
                           #self.res.get_metal,self.res.get_gold)
         
     #Purchasing a building
-    def buy_building(self, building):
+    def buy_building(self, building_number):
         #Check if village has enough resources
-        building = buildings.all_buildings[1]
+        building = buildings.all_buildings[building_number]
         if self.resources >= building.cost:
             #Deduct cost from village resources
             self.resources -= building.cost
             #Add building to list of harvesting buldings
-            self.owned_harvesting_buildings.append(building)
+            self.owned_buildings.append(building)
             print(f"{self.name} purchased {building.name}")
         else:
             print(f"{self.name} has insufficient resources to buy {building.name}")
-            
-        
 
     def fire_power(self):
         return self.att.all_units()
