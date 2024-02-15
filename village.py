@@ -16,7 +16,7 @@ class Village:
         self.res.add_wood(100)
         self.att.buy_tank()
         total_resouces = self.res.get_coal
-        algorithm.fitness(name, total_resouces)
+        algorithm.fitness(self,name, total_resouces)
         #algorithm.fitness(name,self.res.get_wood,self.res.get_coal,
                           #self.res.get_metal,self.res.get_gold)
         

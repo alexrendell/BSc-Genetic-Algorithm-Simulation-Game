@@ -14,4 +14,4 @@ ranked = []
 
 ranked = algorithm.all_villages
 
-print(ranked)
+#print(ranked)

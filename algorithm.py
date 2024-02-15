@@ -5,8 +5,8 @@ all_villages = []
 #all_villages.reverse()
 
 
-def fitness(name, total_resources):
+def foo()
+
+#The village with the largest amount of resources wins
+def fitness(self,name, total_resources):
     
-    #total_resources = wood + coal + metal + gold
-    
-    all_villages.append( (name,total_resources) )
