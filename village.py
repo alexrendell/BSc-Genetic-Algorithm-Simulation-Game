@@ -1,5 +1,5 @@
 from resources import Resources
-import Thesis2.buildings as buildings
+import buildings as buildings
 
 
 class Village:

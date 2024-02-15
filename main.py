@@ -25,7 +25,8 @@ def main():
     village_a = Village("village A", 100, 10)
     village_b = Village("village B", 80, 8)
     
-    village_a.but_building(1)
+    village_a.buy_building(1)
+    village_a.buy_building(2)
     
 if __name__ == "__main__":
     main()
