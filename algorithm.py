@@ -1,6 +1,6 @@
 import random
 from village import Village
-from buildings import Building
+from Thesis2.buildings import Building
 
 class Algorithm:
     def __init__(self, strategy, population, generation):
