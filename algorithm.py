@@ -3,17 +3,19 @@ from village import Village
 from buildings import Building
 
 class Algorithm:
-    def __init__(self, strategy, population, generation):
+    #Strategy is the amount of moves / buildings that can be bought
+    def __init__(self, strategy, population_size, generations):
         self.strategy = strategy
-        self.population = population
-        self.generation = generation
+        self.population_size = population_size
+        self.generations = generations
         self.all_buildings = Building.all_buildings
         
     def initialize_population(self):
         population = []
         for strategy in range(self.population_size):
-            #Generate random strategy
+            #Generate random strategy, each number is a building
             strategy = random.sample(self.all_buildings, len(self.buildings))
+            #Add the strategy to a child and add the child to the population
             population.append(strategy)
         return population
     
@@ -47,18 +49,11 @@ class Algorithm:
         return sorted_parents
     
     #Preforms crossover to create a new offspring
-    def crossover1(self, parent1, parent2):
+    def crossover(self, parent1, parent2):
         #Randomly selects a point from the range 1 to length -1
         crossover_point = random.randint(1, len(parent1) - 1)
         #The begining of the childs stretegy up to the crossover point is from parent 1 and the rest is from parent 2
         child = parent1[:crossover_point] + parent2[crossover_point:]
-        return child
-    
-    def crossover2(self, parent1, parent2):
-        #Randomly selects a point from the range 1 to length -1
-        crossover_point = random.randint(1, len(parent1) - 1)
-        #The begining of the childs stretegy up to the crossover point is from parent 1 and the rest is from parent 2
-        child = parent2[:crossover_point] + parent1[crossover_point:]
         return child
     
     #Apply mutation to a strategy
@@ -74,12 +69,73 @@ class Algorithm:
             
         return mutated_strategy
     
-    def evolve_population(self, current_population, mutaiton_rate):
+    #Combines oarents through crossover and muation
+    def evolve_population(self, current_population, mutation_rate):
         
         new_population = []
-        num_parents = 5
+        num_parents = 3
+        
+        #Selects the top number of parents
+        top_parents = self.select_parents(current_population, num_parents)
+        
+        #The combinations of the children for next generation
+        combinations = [
+            (top_parents[0], top_parents[1], 2)
+            (top_parents[1], top_parents[0], 2)
+            (top_parents[0], top_parents[2], 2)
+            (top_parents[2], top_parents[0], 2)
+            (top_parents[1], top_parents[2], 1)
+            (top_parents[2], top_parents[1], 1)
+        ]
+        
+        #Generate the new generation of children
+        for parent1, parent2, num_children in combinations:
+            #Check how much children are needed from the parents
+            for _ in range(num_children):
+                #Crossover the parents and create a new child
+                child = self.crossover(parent1, parent2)
+                #Mutate the child
+                mutated_child = self.mutate(child, mutation_rate)
+                #Add the child to the list of new population
+                new_population.append(mutated_child)
+            #Keep the orignal 3 parents in the new population
+            new_population.extend(top_parents)
+            
+            return new_population
+        
+     #Starting the genetic algorithm
+    #None means that the parameter is optional
+    def run_genetic_algorithm(self, initial_population = None, mutation_rate = 0.01):
+                    
+        #If its the first generation the get the first population
+        if initial_population is None:
+            current_population = self.initialize_population()
+        #Otherwise use the current population
+        else:
+           current_population = initial_population
+            
+        #Loop over each generation
+        for generation in range(self.generations):
+            print(F"Generation {generation + 1}")
+            
+            #Evaluate and print the fitness of each strategy in the current population
+            for strategy in current_population:
+                fitness = self.evaluate_fitness(strategy, Village("Demo Village",100,10))
+                print("fStrategy: {strategy}, Fitness: {fitness}")
+                
+        #Create the population for the next generation
+        current_population = self.evolve_population(current_population, mutation_rate)
+        
+        #return whatever i need, here its the current popoulation
+        return current_population
+            
         
         
-        
-        
-    
+        #populaiton of 12
+        #1 = 1
+        #2 = 1
+        #3 = 1
+        #1&2, 2&1 * 2 = 4
+        #1&3, 3&1 * 2 = 4
+        #2&3. 2&3 = 2
+        #total of 13 children 

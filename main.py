@@ -19,6 +19,7 @@ ranked = algorithm.all_villages
 '''
 
 from village import Village
+from algorithm import Algorithm
 
 def main():
     
@@ -27,6 +28,12 @@ def main():
     
     village_a.buy_building(1)
     village_a.buy_building(2)
+    
+    print("##########################")
+    
+    test_generation = Algorithm(20, 13, 5)
+    
+    print(test_generation)
     
 if __name__ == "__main__":
     main()
