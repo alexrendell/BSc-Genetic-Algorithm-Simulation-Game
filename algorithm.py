@@ -1,25 +1,26 @@
 import random
 from village import Village
-from buildings import Building
+import buildings
 
 class Algorithm:
     #Strategy is the amount of moves / buildings that can be bought
-    def __init__(self, strategy, population_size, generations):
-        self.strategy = strategy
+    def __init__(self, turns, population_size, generations):  #Change strategy to turns 
+        self.turns = turns
         self.population_size = population_size
         self.generations = generations
-        self.all_buildings = Building.all_buildings
+        self.all_buildings = buildings.all_buildings
         
     def initialize_population(self):
         population = []
-        for strategy in range(self.population_size):
-            #Generate random strategy, each number is a building
-            strategy = random.sample(self.all_buildings, len(self.buildings))
+        for _ in range(self.population_size):
+            #Generate random strategy of length turns (the number of turns)
+            #choices picks random elements from the list (self.turns)
+            strategy = random.choices(self.all_buildings, k = self.turns)
             #Add the strategy to a child and add the child to the population
             population.append(strategy)
         return population
     
-    def evaluate_fitness(self, village, strategy):
+    def evaluate_fitness(self, strategy):
         #need to make villae return a instance of village class
         total_resources = 0
         

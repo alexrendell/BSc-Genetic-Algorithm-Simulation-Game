@@ -32,6 +32,7 @@ def main():
     print("##########################")
     
     test_generation = Algorithm(20, 13, 5)
+    test_generation.run_genetic_algorithm()
     
     print(test_generation)
     
