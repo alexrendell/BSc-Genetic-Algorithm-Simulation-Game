@@ -9,15 +9,19 @@ class Algorithm:
         self.population_size = population_size
         self.generations = generations
         self.all_buildings = buildings.all_buildings
+        i = 0
         
     def initialize_population(self):
         population = []
         for _ in range(self.population_size):
             #Generate random strategy of length turns (the number of turns)
             #choices picks random elements from the list (self.turns)
-            strategy = random.choices(self.all_buildings, k = self.turns)
+            #The stategy is now a list of the index of the building
+            strategy = [self.all_buildings.index(building) for building in random.choices(self.all_buildings, k=self.turns)]
             #Add the strategy to a child and add the child to the population
             population.append(strategy)
+            print("****************************************************************")
+            print(strategy)
         return population
     
     def evaluate_fitness(self, strategy):
@@ -78,14 +82,14 @@ class Algorithm:
         
         #Selects the top number of parents
         top_parents = self.select_parents(current_population, num_parents)
-        
+        print(top_parents)
         #The combinations of the children for next generation
         combinations = [
-            (top_parents[0], top_parents[1], 2)
-            (top_parents[1], top_parents[0], 2)
-            (top_parents[0], top_parents[2], 2)
-            (top_parents[2], top_parents[0], 2)
-            (top_parents[1], top_parents[2], 1)
+            (top_parents[0], top_parents[1], 2),
+            (top_parents[1], top_parents[0], 2),
+            (top_parents[0], top_parents[2], 2),
+            (top_parents[2], top_parents[0], 2),
+            (top_parents[1], top_parents[2], 1),
             (top_parents[2], top_parents[1], 1)
         ]
         
@@ -102,7 +106,7 @@ class Algorithm:
             #Keep the orignal 3 parents in the new population
             new_population.extend(top_parents)
             
-            return new_population
+        return new_population
         
      #Starting the genetic algorithm
     #None means that the parameter is optional
@@ -121,7 +125,7 @@ class Algorithm:
             
             #Evaluate and print the fitness of each strategy in the current population
             for strategy in current_population:
-                fitness = self.evaluate_fitness(strategy, Village("Demo Village",100,10))
+                fitness = self.evaluate_fitness(strategy)
                 print("fStrategy: {strategy}, Fitness: {fitness}")
                 
         #Create the population for the next generation
