@@ -4,24 +4,24 @@ import buildings
 
 class Algorithm:
     #Strategy is the amount of moves / buildings that can be bought
-    def __init__(self, turns, population_size, generations):  #Change strategy to turns 
+    def __init__(self, turns, population_size, generations, starting_resources, starting_workers):  #Change strategy to turns 
         self.turns = turns
         self.population_size = population_size
         self.generations = generations
         self.all_buildings = buildings.all_buildings
-        i = 0
+        self.starting_resources = starting_resources
+        self.starting_workers = starting_workers
+        self.i = 0
         
     def initialize_population(self):
         population = []
         for _ in range(self.population_size):
             #Generate random strategy of length turns (the number of turns)
-            #choices picks random elements from the list (self.turns)
+            #choices picks random elements from the all_buildings list (picks self.turn amount of elements)
             #The stategy is now a list of the index of the building
             strategy = [self.all_buildings.index(building) for building in random.choices(self.all_buildings, k=self.turns)]
             #Add the strategy to a child and add the child to the population
             population.append(strategy)
-            print("****************************************************************")
-            print(strategy)
         return population
     
     def evaluate_fitness(self, strategy):
@@ -29,16 +29,27 @@ class Algorithm:
         total_resources = 0
         
         #Creates a temporary village to simulate strtegy
-        temp_village = Village("temp", 100, 10)
+        temp_village = Village(f"Village {self.i}", self.starting_resources, self.starting_workers)
+        if self.i > self.population_size:
+            self.i = 0
+        else:
+            self.i += 1
         
         #Purchase buildings according to strategy
         for building_number in strategy:
             temp_village.buy_building(building_number)
         
-        #Calculate total resources gathered by temp village   
+        #Calculate total resources of all buildings
+        for building in temp_village.owned_buildings:
+                total_resources += building.resource_output
+            
+            
+        ''' find the total resouce when there are multiple
+        #Calculate total resources gathered by temp village  
         total_resources = sum([building.resource_output.get(resource, 0) 
                                for building in temp_village.owned_buildings 
                                for resource in building.resource_output])
+        '''
         return total_resources
     
     #Selects parents for crossover base don their fitness

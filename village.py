@@ -3,27 +3,21 @@ import buildings as buildings
 
 
 class Village:
-    def __init__(self, name, resources, population):
+    def __init__(self, name, resources, workers):
         self.name = name
-        self.population = population
+        self.workers = workers
         self.resources = resources
         self.owned_buildings = []
+        #Add the amount of workers to the list of owned buildings
+        for _ in range(workers):
+            self.owned_buildings.append(buildings.all_buildings[1])
         self.turn = 0
-        #self.res = Resources(self)
-        #self.att = Attacking(self)
-        #self.defe = Defensive(self)
-        #self.harv = Harvesting(self)
-        #self.res.add_wood(100)
-        #self.att.buy_tank()
-        #total_resouces = self.res.get_coal
-        #algorithm.fitness(self,name, total_resouces)
-        #algorithm.fitness(name,self.res.get_wood,self.res.get_coal,
-                          #self.res.get_metal,self.res.get_gold)
         
     #Purchasing a building
     def buy_building(self, building_number):
-        #Check if village has enough resources
+        #Retruns building getting bought
         building = buildings.all_buildings[building_number]
+        #Check if village has enough resources
         if self.resources >= building.cost:
             #Deduct cost from village resources
             self.resources -= building.cost
@@ -32,6 +26,10 @@ class Village:
             print(f"{self.name} purchased {building.name}")
         else:
             print(f"{self.name} has insufficient resources to buy {building.name}")
+            
+
+
+
 
     def fire_power(self):
         return self.att.all_units()
