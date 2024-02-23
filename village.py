@@ -10,7 +10,7 @@ class Village:
         self.owned_buildings = []
         #Add the amount of workers to the list of owned buildings
         for _ in range(workers):
-            self.owned_buildings.append(buildings.all_buildings[1])
+            self.owned_buildings.append(buildings.all_buildings[0])
         self.turn = 0
         
     #Purchasing a building

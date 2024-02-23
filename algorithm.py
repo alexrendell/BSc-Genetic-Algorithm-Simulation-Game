@@ -121,7 +121,7 @@ class Algorithm:
         
      #Starting the genetic algorithm
     #None means that the parameter is optional
-    def run_genetic_algorithm(self, initial_population = None, mutation_rate = 0.01):
+    def run_genetic_algorithm(self, initial_population = None, mutation_rate = 0.3):
                     
         #If its the first generation the get the first population
         if initial_population is None:
