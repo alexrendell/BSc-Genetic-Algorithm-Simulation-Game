@@ -164,20 +164,19 @@ class Algorithm:
         
      #Starting the genetic algorithm
     #None means that the parameter is optional
-    def run_genetic_algorithm(self, initial_population = None, mutation_rate = 0.01):
+    def run_genetic_algorithm(self, mutation_rate):
         
-        
-        #If its the first generation the get the first population
-        if initial_population is None:
-            current_population = self.initialize_population()
-        #Otherwise use the current population
-        else:
-           current_population = initial_population
-            
+        self.mutation_rate = mutation_rate
+                    
+
+        current_population = self.initialize_population()
+        print(len(current_population))
+       
         #Loop over each generation
         for generation in range(self.generations):
+            new_generation = []
+            
             for agent in range (len(current_population)):
-                new_generation = []
                 
                 # Step 1: Select two parents using the roulette wheel
                 parent_1 = self.roulette_wheel(current_population)
@@ -195,7 +194,7 @@ class Algorithm:
             
             best_of_population = max(current_population, key=lambda agent: self.evaluate_fitness(agent))
             
-            print(f"Generation {generation}, Best fitness: {self.evaluate_fitness(best_of_population)}")
+            print(f"Generation {generation+1}, Best fitness: {self.evaluate_fitness(best_of_population)}")
             print(best_of_population)
             print("∑∑∑∑∑∑∑∑∑", len(current_population))
     

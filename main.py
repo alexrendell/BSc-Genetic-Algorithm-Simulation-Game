@@ -6,8 +6,9 @@ def main():
     
     #Generation parameters:
     #number or turns, population size, maximum number of generations, starting resources, starting workers
-    test_generation = Algorithm(10, 20, 5, 300, 10)
-    test_generation.run_genetic_algorithm()
+    test_generation = Algorithm(10, 20, 1000, 300, 10)
+    # Mutation rate
+    test_generation.run_genetic_algorithm(0.05)
     
     print(test_generation)
     
