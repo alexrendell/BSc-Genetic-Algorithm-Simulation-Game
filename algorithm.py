@@ -1,6 +1,7 @@
 import random
 from village import Village
 import buildings
+import numpy.random as npr
 
 class Algorithm:
     #Strategy is the amount of moves / buildings that can be bought
@@ -25,12 +26,25 @@ class Algorithm:
         return population
     
     def evaluate_fitness(self, strategy):
-        #need to make villae return a instance of village class
+        
+        total_resources = 0
+        
+        temp_village = Village("Temp_Village", self.starting_resources, self.starting_workers)
+        
+        for building in strategy:
+            temp_village.buy_building(building)
+            
+        total_resources = temp_village.resources
+        
+        return total_resources
+        
+        '''
+        #need to make village return a instance of village class
         total_resources = 0
         
         #Creates a temporary village to simulate strtegy
         temp_village = Village(f"Village {self.i}", self.starting_resources, self.starting_workers)
-        if self.i > self.population_size:
+        if self.i == self.population_size:
             self.i = 0
         else:
             self.i += 1
@@ -44,13 +58,13 @@ class Algorithm:
                 total_resources += building.resource_output
             
             
-        ''' find the total resouce when there are multiple
+         find the total resouce when there are multiple
         #Calculate total resources gathered by temp village  
         total_resources = sum([building.resource_output.get(resource, 0) 
                                for building in temp_village.owned_buildings 
                                for resource in building.resource_output])
+        
         '''
-        return total_resources
     
     #Selects parents for crossover base don their fitness
     def select_parents(self, population, num_parents):
@@ -66,22 +80,40 @@ class Algorithm:
     
     #Preforms crossover to create a new offspring
     def crossover(self, parent1, parent2):
+        
+        crossover_point = random.randint(1, len(parent1) -1)
+        
+        child = parent1[:crossover_point] + parent2[crossover_point:]
+        
+        '''
+        p1 = parent1[:]
+        p2 = parent2[:]
+        
+        for crossover in range(crossover_point):
+            p1[crossover], p2[crossover] = p2[crossover], p1[crossover]
+        '''    
+        
+        return child
+        
+        
+        '''
         #Randomly selects a point from the range 1 to length -1
         crossover_point = random.randint(1, len(parent1) - 1)
         #The begining of the childs stretegy up to the crossover point is from parent 1 and the rest is from parent 2
         child = parent1[:crossover_point] + parent2[crossover_point:]
         return child
+        '''
     
     #Apply mutation to a strategy
     def mutate(self, strategy, mutation_rate):
         #Creates a copy of the original strategy to avoid changing the original
         mutated_strategy = strategy.copy()
         #Loops through all the buildings in strategy
-        for i in range(len(mutated_strategy)): #range starts from 0 and increments 1 untill length of mutated strategy
+        for building in range(len(mutated_strategy)): #range starts from 0 and increments 1 untill length of mutated strategy
             #genrates a random float from 0.00 - 1.00 if it is less than the mutation rate it mutates
             if random.random() < mutation_rate:
                 #changes one of the buildings in strategy to another random building
-                mutated_strategy[i] = random.choice(range(len(self.all_buildings)))
+                mutated_strategy[building] = random.choice(range(len(self.all_buildings)))
             
         return mutated_strategy
     
@@ -119,10 +151,22 @@ class Algorithm:
             
         return new_population
         
+    def roulette_wheel(self, current_population):
+        
+        highest_first_fitness = [self.evaluate_fitness(strategy) for strategy in current_population]
+        
+        total_fitness = sum(highest_first_fitness)
+        
+        probability = [fitness / total_fitness for fitness in highest_first_fitness]
+        
+        return current_population[npr.choice(len(current_population), p=probability)]
+        
+        
      #Starting the genetic algorithm
     #None means that the parameter is optional
     def run_genetic_algorithm(self, initial_population = None, mutation_rate = 0.01):
-                    
+        
+        
         #If its the first generation the get the first population
         if initial_population is None:
             current_population = self.initialize_population()
@@ -132,18 +176,30 @@ class Algorithm:
             
         #Loop over each generation
         for generation in range(self.generations):
-            print(F"Generation {generation + 1}")
-            
-            #Evaluate and print the fitness of each strategy in the current population
-            for strategy in current_population:
-                fitness = self.evaluate_fitness(strategy)
-                print("fStrategy: {strategy}, Fitness: {fitness}")
+            for agent in range (len(current_population)):
+                new_generation = []
                 
-        #Create the population for the next generation
-        current_population = self.evolve_population(current_population, mutation_rate)
+                # Step 1: Select two parents using the roulette wheel
+                parent_1 = self.roulette_wheel(current_population)
+                parent_2 = self.roulette_wheel(current_population)
+                
+                # Step 2: Create a new child with the two parents
+                child = self.crossover(parent_1, parent_2)
+                
+                # Step 3: Apply mutation to the child
+                mutated_child = self.mutate(child, mutation_rate)
+                new_generation.append(mutated_child)
         
-        #return whatever i need, here its the current popoulation
-        return current_population
+            # Step 3: Update for the next generation
+            current_population = new_generation
+            
+            best_of_population = max(current_population, key=lambda agent: self.evaluate_fitness(agent))
+            
+            print(f"Generation {generation}, Best fitness: {self.evaluate_fitness(best_of_population)}")
+            print(best_of_population)
+            print("∑∑∑∑∑∑∑∑∑", len(current_population))
+    
+        
             
         
         

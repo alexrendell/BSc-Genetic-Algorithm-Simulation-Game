@@ -9,8 +9,8 @@ class Village:
         self.resources = resources
         self.owned_buildings = []
         #Add the amount of workers to the list of owned buildings
-        for _ in range(workers):
-            self.owned_buildings.append(buildings.all_buildings[0])
+        for buy_workers in range(workers):
+            self.owned_buildings.append(buildings.all_buildings[1])
         self.turn = 0
         
     #Purchasing a building
@@ -23,9 +23,10 @@ class Village:
             self.resources -= building.cost
             #Add building to list of harvesting buldings
             self.owned_buildings.append(building)
-            print(f"{self.name} purchased {building.name}")
-        else:
-            print(f"{self.name} has insufficient resources to buy {building.name}")
+            self.resources += building.resource_output
+            # print(f"{self.name} purchased {building.name}")
+        # else:
+            # print(f"{self.name} has insufficient resources to buy {building.name}")
             
 
 
