@@ -170,7 +170,6 @@ class Algorithm:
                     
 
         current_population = self.initialize_population()
-        print(len(current_population))
        
         #Loop over each generation
         for generation in range(self.generations):
@@ -195,8 +194,11 @@ class Algorithm:
             best_of_population = max(current_population, key=lambda agent: self.evaluate_fitness(agent))
             
             print(f"Generation {generation+1}, Best fitness: {self.evaluate_fitness(best_of_population)}")
-            print(best_of_population)
-            print("∑∑∑∑∑∑∑∑∑", len(current_population))
+            # print(best_of_population)
+            
+            if self.evaluate_fitness(best_of_population) == 3800:
+                break
+
     
         
             

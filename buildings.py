@@ -11,7 +11,7 @@ all_buildings = [
     Building("Worker", 20, 3),
     Building("Farm", 70, 10),
     Building("mine", 60, 25),
-    Building("Lumber Mill",10, 1000)
+    Building("Lumber Mill",10, 100)
 ]
     
 '''    Multiple resources (maye incorprate later)
