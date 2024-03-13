@@ -37,34 +37,6 @@ class Algorithm:
         total_resources = temp_village.resources
         
         return total_resources
-        
-        '''
-        #need to make village return a instance of village class
-        total_resources = 0
-        
-        #Creates a temporary village to simulate strtegy
-        temp_village = Village(f"Village {self.i}", self.starting_resources, self.starting_workers)
-        if self.i == self.population_size:
-            self.i = 0
-        else:
-            self.i += 1
-        
-        #Purchase buildings according to strategy
-        for building_number in strategy:
-            temp_village.buy_building(building_number)
-        
-        #Calculate total resources of all buildings
-        for building in temp_village.owned_buildings:
-                total_resources += building.resource_output
-            
-            
-         find the total resouce when there are multiple
-        #Calculate total resources gathered by temp village  
-        total_resources = sum([building.resource_output.get(resource, 0) 
-                               for building in temp_village.owned_buildings 
-                               for resource in building.resource_output])
-        
-        '''
     
     #Selects parents for crossover base don their fitness
     def select_parents(self, population, num_parents):
@@ -95,14 +67,6 @@ class Algorithm:
         
         return child
         
-        
-        '''
-        #Randomly selects a point from the range 1 to length -1
-        crossover_point = random.randint(1, len(parent1) - 1)
-        #The begining of the childs stretegy up to the crossover point is from parent 1 and the rest is from parent 2
-        child = parent1[:crossover_point] + parent2[crossover_point:]
-        return child
-        '''
     
     #Apply mutation to a strategy
     def mutate(self, strategy, mutation_rate):
@@ -161,11 +125,32 @@ class Algorithm:
         
         return current_population[npr.choice(len(current_population), p=probability)]
         
+    def tournament_selection(self, current_population, tournament_size):
+        # selected_parents = []
+        population_size = len(current_population)
+    
+        # Perform tournament selection for each parent
+        for _ in range(population_size):
+            # Randomly select tournament_size individuals from the population
+            tournament_individuals = random.sample(current_population, tournament_size)
+        
+            # Evaluate the fitness of each individual in the tournament
+            tournament_fitness = [self.evaluate_fitness(individual) for individual in tournament_individuals]
+        
+            # Select the individual with the highest fitness as the parent
+            selected_parent = tournament_individuals[tournament_fitness.index(max(tournament_fitness))]
+        
+            # Add the selected parent to the list
+            # selected_parents.append(selected_parent)
+    
+        return selected_parent
+        
+    
         
      #Starting the genetic algorithm
     #None means that the parameter is optional
-    def run_genetic_algorithm(self, mutation_rate):
-        
+    def run_genetic_algorithm(self, mutation_rate, tournament_size):
+        self.tournament_size = tournament_size
         self.mutation_rate = mutation_rate
                     
 
@@ -178,8 +163,13 @@ class Algorithm:
             for agent in range (len(current_population)):
                 
                 # Step 1: Select two parents using the roulette wheel
-                parent_1 = self.roulette_wheel(current_population)
-                parent_2 = self.roulette_wheel(current_population)
+                
+                # Step:1.2 Select two parents using the tournament seleciton
+                parent_1 = self.tournament_selection(current_population, tournament_size)
+                parent_2 = self.tournament_selection(current_population, tournament_size)
+                
+                # parent_1 = self.roulette_wheel(current_population)
+                # parent_2 = self.roulette_wheel(current_population)
                 
                 # Step 2: Create a new child with the two parents
                 child = self.crossover(parent_1, parent_2)
@@ -194,9 +184,9 @@ class Algorithm:
             best_of_population = max(current_population, key=lambda agent: self.evaluate_fitness(agent))
             
             print(f"Generation {generation+1}, Best fitness: {self.evaluate_fitness(best_of_population)}")
-            # print(best_of_population)
+            print(best_of_population)
             
-            if self.evaluate_fitness(best_of_population) == 3800:
+            if self.evaluate_fitness(best_of_population) == 2800:
                 break
 
     
