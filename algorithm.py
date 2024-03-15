@@ -132,18 +132,18 @@ class Algorithm:
         # Perform tournament selection for each parent
         for _ in range(population_size):
             # Randomly select tournament_size individuals from the population
-            tournament_individuals = random.sample(current_population, tournament_size)
+            tournament_parents = random.sample(current_population, tournament_size)
         
             # Evaluate the fitness of each individual in the tournament
-            tournament_fitness = [self.evaluate_fitness(individual) for individual in tournament_individuals]
+            tournament_fitness = [self.evaluate_fitness(potential_parent) for potential_parent in tournament_parents]
         
             # Select the individual with the highest fitness as the parent
-            selected_parent = tournament_individuals[tournament_fitness.index(max(tournament_fitness))]
+            parent = tournament_parents[tournament_fitness.index(max(tournament_fitness))]
         
             # Add the selected parent to the list
             # selected_parents.append(selected_parent)
     
-        return selected_parent
+        return parent
         
     
         

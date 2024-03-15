@@ -14,12 +14,13 @@ all_buildings = [
     Building("Lumber Mill",10, 100)
 ]
     
-'''    Multiple resources (maye incorprate later)
-all_buildings = [
-    Building("SKIP", 0, {}), #Does cost or give anything just skips a round insetad of failing to buy a resouce
-    Building("Worker", 20, {"food:":1, "stone":1, "wood":1}),
+    
+all_buildings2 = [
+    Building("SKIP", 0, {}),
+    Building("Worker", 20, {"food:":1, "wood":1, "stone":1}),
     Building("Farm", 70, {"food":5}),
-    Building("mine", 60, {"stone":3}),
-    Building("Lumber Mill", 60, {"wood":4})
+    Building("Lumber Mill", 60, {"wood":3}),
+    Building("Quarry", 60, {"stone":4}),
+    Building("Forge",100, {'metal':1,})
 ]
-'''
+
