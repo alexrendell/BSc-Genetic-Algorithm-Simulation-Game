@@ -2,6 +2,7 @@ import random
 from village import Village
 import buildings
 import numpy.random as npr
+import copy
 
 class Algorithm:
     #Strategy is the amount of moves / buildings that can be bought
@@ -9,7 +10,7 @@ class Algorithm:
         self.turns = turns
         self.population_size = population_size
         self.generations = generations
-        self.all_buildings = buildings.all_buildings
+        self.all_buildings = buildings.all_buildings2
         self.starting_resources = starting_resources
         self.starting_workers = starting_workers
         self.i = 0
@@ -26,16 +27,17 @@ class Algorithm:
         return population
     
     def evaluate_fitness(self, strategy):
-        
         total_resources = 0
+        #Creating a deep copy because i dont want the original starting resources 
+        #to be changed and its a dictionary so it will always reference the original starting_resoruces
+        test_starting_resources = copy.deepcopy(self.starting_resources)
+        test_starting_workers = self.starting_workers
         
-        temp_village = Village("Temp_Village", self.starting_resources, self.starting_workers)
-        
+        temp_village = Village("Temp_Village", test_starting_resources, test_starting_workers)
         for building in strategy:
             temp_village.buy_building(building)
-            
-        total_resources = temp_village.resources
         
+        total_resources = temp_village.total_resources()
         return total_resources
     
     #Selects parents for crossover base don their fitness
@@ -56,14 +58,6 @@ class Algorithm:
         crossover_point = random.randint(1, len(parent1) -1)
         
         child = parent1[:crossover_point] + parent2[crossover_point:]
-        
-        '''
-        p1 = parent1[:]
-        p2 = parent2[:]
-        
-        for crossover in range(crossover_point):
-            p1[crossover], p2[crossover] = p2[crossover], p1[crossover]
-        '''    
         
         return child
         
@@ -185,9 +179,6 @@ class Algorithm:
             
             print(f"Generation {generation+1}, Best fitness: {self.evaluate_fitness(best_of_population)}")
             print(best_of_population)
-            
-            if self.evaluate_fitness(best_of_population) == 2800:
-                break
 
     
         
