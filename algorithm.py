@@ -10,7 +10,7 @@ class Algorithm:
         self.turns = turns
         self.population_size = population_size
         self.generations = generations
-        self.all_buildings = buildings.all_buildings2
+        self.all_buildings = buildings.all_buildings
         self.starting_resources = starting_resources
         self.starting_workers = starting_workers
         self.i = 0
@@ -37,7 +37,8 @@ class Algorithm:
         for building in strategy:
             temp_village.buy_building(building)
         
-        total_resources = temp_village.total_resources()
+        #total_resources = temp_village.total_resources()
+        total_resources = temp_village.total_fitness()
         return total_resources
     
     #Selects parents for crossover base don their fitness
@@ -146,7 +147,6 @@ class Algorithm:
     def run_genetic_algorithm(self, mutation_rate, tournament_size):
         self.tournament_size = tournament_size
         self.mutation_rate = mutation_rate
-                    
 
         current_population = self.initialize_population()
        
@@ -177,7 +177,22 @@ class Algorithm:
             
             best_of_population = max(current_population, key=lambda agent: self.evaluate_fitness(agent))
             
-            print(f"Generation {generation+1}, Best fitness: {self.evaluate_fitness(best_of_population)}")
+            
+            test_starting_resources = copy.deepcopy(self.starting_resources)
+            test_starting_workers = self.starting_workers
+            
+            best_village = Village("Best Village", test_starting_resources, test_starting_workers)
+            for building in best_of_population:
+                best_village.buy_building(building)
+            
+            best_fitness = self.evaluate_fitness(best_of_population)
+            best_attack = best_village.get_attack()
+            best_defence = best_village.get_defence()
+            
+            
+            
+            
+            print(f"Generation {generation+1}, Best fitness: {best_fitness}, Best attack: {best_attack}, Best defence: {best_defence}")
             print(best_of_population)
 
     
