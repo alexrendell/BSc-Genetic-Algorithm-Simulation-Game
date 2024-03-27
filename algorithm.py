@@ -186,13 +186,16 @@ class Algorithm:
                 best_village.buy_building(building)
             
             best_fitness = self.evaluate_fitness(best_of_population)
+            best_food = best_village.get_food()
+            best_wood = best_village.get_wood()
+            best_stone = best_village.get_stone()
+            best_metal = best_village.get_metal()
+            best_gold = best_village.get_gold()
             best_attack = best_village.get_attack()
             best_defence = best_village.get_defence()
             
-            
-            
-            
-            print(f"Generation {generation+1}, Best fitness: {best_fitness}, Best attack: {best_attack}, Best defence: {best_defence}")
+            print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
+            print(f"Food, {best_food}, Wood, {best_wood}, Stone, {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
             print(best_of_population)
 
     

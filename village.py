@@ -6,38 +6,55 @@ class Village:
     def __init__(self, name, resources, workers):
         self.name = name
         self.workers = workers
-        self.resources_count = resources
+        self.resource_balance = resources
+        self.resource_income = ({"food":0,"wood":0,"stone":0,"metal":0,"gold":0})
         self.owned_buildings = []
+        
         #Add the amount of workers to the list of owned buildings
         for buy_workers in range(workers):
-            self.owned_buildings.append(buildings.all_buildings[1])
+            building = buildings.all_buildings[1]
+            for resource, output in building.resource_output.items():
+                self.resource_income[resource] += output
+            self.owned_buildings.append(building)
+            
         self.turn = 0
-        self.defensive_strength = 0
-        self.attacking_power = 0 
+        self.defensive_strength = 100
+        self.attacking_power = 100 
         
     #Purchasing a building
     def buy_building(self, building_number):
+        
+        # Adds the income to their balance
+        for resource, cost in self.resource_income.items():
+            self.resource_balance[resource] += self.resource_income[resource]
+        
+        
         #Retruns building getting bought
         building = buildings.all_buildings[building_number]
         #Check if village has enough resources
-        if all(self.resources_count[resource] >= building.cost[resource] 
+        if all(self.resource_balance[resource] >= building.cost[resource] 
                for resource in building.cost):
             #Deducts the cost of the building
             for resource, cost in building.cost.items(): #.items returns the pair 
-                self.resources_count[resource] -= cost
+                self.resource_balance[resource] -= cost
             
-            # Adds the output of the building to the village
+            # Adds the output of the building to the village income
             for resource, output in building.resource_output.items():
-                self.resources_count[resource] += output            #here somewhere
+                self.resource_income[resource] += output            #here somewhere
             
             self.attacking_and_defence(building)
             
             self.owned_buildings.append(building)
             
+            #If agent cant buy building it gets punished (promiting the skip building)
+        else:
+            for resource in self.resource_balance:
+                self.resource_balance[resource] = 0
+            
        
     def total_resources(self):
         total_resource = 0
-        for name, amount in self.resources_count.items():
+        for name, amount in self.resource_balance.items():
             if name == "food":
                 total_resource += amount
             elif name == "wood":
@@ -66,7 +83,7 @@ class Village:
             total_resource += total_resource * 2
         else:
             attack_score = self.attacking_power/100
-            total_resource += total_resource * (1 + attack_score)
+            total_resource += total_resource * (1 + (attack_score))
         
         # Defend to lose less resources
         if self.defensive_strength > 100:
@@ -87,3 +104,18 @@ class Village:
     def get_attack(self):
         best_attack = self.attacking_power
         return best_attack
+    
+    def get_food(self):
+        return self.resource_balance["food"]
+    
+    def get_wood(self):
+        return self.resource_balance["wood"]
+    
+    def get_stone(self):
+        return self.resource_balance["stone"]
+    
+    def get_metal(self):
+        return self.resource_balance["metal"]
+    
+    def get_gold(self):
+        return self.resource_balance["gold"]
