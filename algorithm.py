@@ -1,16 +1,19 @@
 import random
 from village import Village
 import buildings
+import troops
 import numpy.random as npr
 import copy
 
 class Algorithm:
     #Strategy is the amount of moves / buildings that can be bought
-    def __init__(self, turns, population_size, generations, starting_resources, starting_workers):  #Change strategy to turns 
-        self.turns = turns
+    def __init__(self, resource_turns, attack_turns, population_size, generations, starting_resources, starting_workers):  #Change strategy to turns 
+        self.resource_turns = resource_turns
+        self.attack_turns = attack_turns
         self.population_size = population_size
         self.generations = generations
         self.all_buildings = buildings.all_buildings
+        self.all_troops = troops.all_troops
         self.starting_resources = starting_resources
         self.starting_workers = starting_workers
         self.i = 0
@@ -21,23 +24,37 @@ class Algorithm:
             #Generate random strategy of length turns (the number of turns)
             #choices picks random elements from the all_buildings list (picks self.turn amount of elements)
             #The stategy is now a list of the index of the building
-            strategy = [self.all_buildings.index(building) for building in random.choices(self.all_buildings, k=self.turns)]
+            building_strategy = [self.all_buildings.index(building) for building in random.choices(self.all_buildings, k=self.resource_turns)]
+            troop_strategy = [self.all_troops.index(troop) for troop in random.choices(self.all_troops, k=self.attack_turns)] 
             #Add the strategy to a child and add the child to the population
-            population.append(strategy)
+            population.append((building_strategy,troop_strategy))
         return population
     
     def evaluate_fitness(self, strategy):
         total_resources = 0
+        
+        building_strategy = strategy[0]
+        troop_strategy = strategy[1]
+        
         #Creating a deep copy because i dont want the original starting resources 
         #to be changed and its a dictionary so it will always reference the original starting_resoruces
         test_starting_resources = copy.deepcopy(self.starting_resources)
         test_starting_workers = self.starting_workers
         
+        #Resource colleciton phase (buying buildings)
         temp_village = Village("Temp_Village", test_starting_resources, test_starting_workers)
-        for building in strategy:
+        for building in building_strategy:
             temp_village.buy_building(building)
         
-        #total_resources = temp_village.total_resources()
+        #Troop buying phase
+        for troop in troop_strategy:
+            temp_village.buy_troop(troop)
+        
+        #Attack phase
+        #temp_village.attac
+        
+        
+        
         total_resources = temp_village.total_fitness()
         return total_resources
     
@@ -46,7 +63,7 @@ class Algorithm:
         #Use all individuals in the population as parents
         parents = population
         #Sort strategies based on fittness in decending order
-        parents.sort(key=lambda strategy: self.evaluate_fitness(strategy))
+        parents.sort(key=lambda building_strategy: self.evaluate_fitness(building_strategy))
         #Reverse to highest to lowest
         parents.reverse()
         #Return the top 'num_parents' strategies as parents
@@ -56,9 +73,16 @@ class Algorithm:
     #Preforms crossover to create a new offspring
     def crossover(self, parent1, parent2):
         
-        crossover_point = random.randint(1, len(parent1) -1)
+        building_crossover_point = random.randint(1, len(parent1[0]) -1)
+        troop_crossover_point = random.randint(1, len(parent1[1]) -1)
         
-        child = parent1[:crossover_point] + parent2[crossover_point:]
+        
+        child_building = parent1[0][:building_crossover_point] + parent2[0][building_crossover_point:]
+        child_troop = parent1[1][:troop_crossover_point] + parent2[1][troop_crossover_point:]
+        
+        
+        
+        child = (child_building, child_troop)
         
         return child
         
@@ -66,14 +90,17 @@ class Algorithm:
     #Apply mutation to a strategy
     def mutate(self, strategy, mutation_rate):
         #Creates a copy of the original strategy to avoid changing the original
-        mutated_strategy = strategy.copy()
+        mutated_building_strategy = strategy[0].copy()
+        mutated_troop_strategy = strategy[1].copy()
         #Loops through all the buildings in strategy
-        for building in range(len(mutated_strategy)): #range starts from 0 and increments 1 untill length of mutated strategy
+        for building in range(len(mutated_building_strategy)): #range starts from 0 and increments 1 untill length of mutated strategy
             #genrates a random float from 0.00 - 1.00 if it is less than the mutation rate it mutates
             if random.random() < mutation_rate:
                 #changes one of the buildings in strategy to another random building
-                mutated_strategy[building] = random.choice(range(len(self.all_buildings)))
-            
+                mutated_building_strategy[building] = random.choice(range(len(self.all_buildings)))
+        
+        mutated_strategy = (mutated_building_strategy, mutated_troop_strategy )  
+        
         return mutated_strategy
     
     #Combines oarents through crossover and muation
@@ -112,7 +139,7 @@ class Algorithm:
         
     def roulette_wheel(self, current_population):
         
-        highest_first_fitness = [self.evaluate_fitness(strategy) for strategy in current_population]
+        highest_first_fitness = [self.evaluate_fitness(building_strategy) for building_strategy in current_population]
         
         total_fitness = sum(highest_first_fitness)
         
@@ -128,9 +155,14 @@ class Algorithm:
         for _ in range(population_size):
             # Randomly select tournament_size individuals from the population
             tournament_parents = random.sample(current_population, tournament_size)
-        
-            # Evaluate the fitness of each individual in the tournament
+            
+            #Use the tournament strategy
+            #building_strategies = [parent[0] for parent in tournament_parents]
+            
             tournament_fitness = [self.evaluate_fitness(potential_parent) for potential_parent in tournament_parents]
+            
+            # Evaluate the fitness of each individual in the tournament
+            # tournament_fitness = [self.evaluate_fitness(building_strategy) for building_strategy in building_strategies]
         
             # Select the individual with the highest fitness as the parent
             parent = tournament_parents[tournament_fitness.index(max(tournament_fitness))]
@@ -139,7 +171,6 @@ class Algorithm:
             # selected_parents.append(selected_parent)
     
         return parent
-        
     
         
      #Starting the genetic algorithm
@@ -162,9 +193,6 @@ class Algorithm:
                 parent_1 = self.tournament_selection(current_population, tournament_size)
                 parent_2 = self.tournament_selection(current_population, tournament_size)
                 
-                # parent_1 = self.roulette_wheel(current_population)
-                # parent_2 = self.roulette_wheel(current_population)
-                
                 # Step 2: Create a new child with the two parents
                 child = self.crossover(parent_1, parent_2)
                 
@@ -174,7 +202,6 @@ class Algorithm:
         
             # Step 3: Update for the next generation
             current_population = new_generation
-            
             best_of_population = max(current_population, key=lambda agent: self.evaluate_fitness(agent))
             
             
@@ -182,7 +209,8 @@ class Algorithm:
             test_starting_workers = self.starting_workers
             
             best_village = Village("Best Village", test_starting_resources, test_starting_workers)
-            for building in best_of_population:
+            best_building_strategy = best_of_population[0]
+            for building in best_building_strategy:
                 best_village.buy_building(building)
             
             best_fitness = self.evaluate_fitness(best_of_population)
@@ -195,8 +223,8 @@ class Algorithm:
             best_defence = best_village.get_defence()
             
             print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
-            print(f"Food, {best_food}, Wood, {best_wood}, Stone, {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
-            print(best_of_population)
+            print(f"Food: {best_food}, Wood: {best_wood}, Stone: {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
+            print(f"Best resouce Strategy: {best_of_population[0]}, Best attack strategy: {best_of_population[1]}")
 
     
         

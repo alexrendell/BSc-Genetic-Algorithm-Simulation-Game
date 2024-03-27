@@ -1,5 +1,6 @@
 from resources import Resources
 import buildings as buildings
+import troops as troops
 
 
 class Village:
@@ -9,6 +10,8 @@ class Village:
         self.resource_balance = resources
         self.resource_income = ({"food":0,"wood":0,"stone":0,"metal":0,"gold":0})
         self.owned_buildings = []
+        self.attack_output = ({"Strength":0,"speed":0,"adaptability":0,"special ability":0})
+        self.owned_troops = []
         
         #Add the amount of workers to the list of owned buildings
         for buy_workers in range(workers):
@@ -20,14 +23,34 @@ class Village:
         self.turn = 0
         self.defensive_strength = 100
         self.attacking_power = 100 
+       
+    #Purchasing a troop 
+    def buy_troop(self, troop_number):
         
+        troop = troops.all_troops[troop_number]
+        
+        if all(self.resource_balance[resource] >= troop.cost[resource]
+               for resource in troop.cost):
+            
+            for resource, cost in troop.cost.items():
+                self.resource_balance[resource] -= cost
+            
+            for stat, output in troop.attack_output.items():
+                self.attack_output[stat] += output            #here somewhere
+            
+            self.owned_troops.append(troop)
+            
+            #If agent cant buy building it gets punished (promiting the skip building)
+        else:
+            for resource in self.resource_balance:
+                self.resource_balance[resource] = 0
+                    
     #Purchasing a building
     def buy_building(self, building_number):
         
         # Adds the income to their balance
         for resource, cost in self.resource_income.items():
             self.resource_balance[resource] += self.resource_income[resource]
-        
         
         #Retruns building getting bought
         building = buildings.all_buildings[building_number]
@@ -50,7 +73,9 @@ class Village:
         else:
             for resource in self.resource_balance:
                 self.resource_balance[resource] = 0
-            
+    
+    #def attack(self, troop_list):
+       
        
     def total_resources(self):
         total_resource = 0
