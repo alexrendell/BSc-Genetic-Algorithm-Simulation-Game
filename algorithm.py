@@ -50,13 +50,12 @@ class Algorithm:
         for troop in troop_strategy:
             temp_village.buy_troop(troop)
         
-        #Attack phase
-        #temp_village.attac
-        
-        
-        
+        total_attack = temp_village.total_attack()
         total_resources = temp_village.total_fitness()
-        return total_resources
+        
+        fitness = (total_resources * 0.25) + (total_attack * 0.75)
+        
+        return fitness
     
     #Selects parents for crossover base don their fitness
     def select_parents(self, population, num_parents):
@@ -93,11 +92,14 @@ class Algorithm:
         mutated_building_strategy = strategy[0].copy()
         mutated_troop_strategy = strategy[1].copy()
         #Loops through all the buildings in strategy
-        for building in range(len(mutated_building_strategy)): #range starts from 0 and increments 1 untill length of mutated strategy
-            #genrates a random float from 0.00 - 1.00 if it is less than the mutation rate it mutates
+        for building in range(len(mutated_building_strategy)):
             if random.random() < mutation_rate:
                 #changes one of the buildings in strategy to another random building
                 mutated_building_strategy[building] = random.choice(range(len(self.all_buildings)))
+        
+        for troop in range(len(mutated_troop_strategy)):
+            if random.random() < mutation_rate:
+                mutated_troop_strategy[troop] = random.choice(range(len(self.all_troops)))
         
         mutated_strategy = (mutated_building_strategy, mutated_troop_strategy )  
         
@@ -224,18 +226,7 @@ class Algorithm:
             
             print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
             print(f"Food: {best_food}, Wood: {best_wood}, Stone: {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
-            print(f"Best resouce Strategy: {best_of_population[0]}, Best attack strategy: {best_of_population[1]}")
-
-    
-        
-            
-        
-        
-        #populaiton of 12
-        #1 = 1
-        #2 = 1
-        #3 = 1
-        #1&2, 2&1 * 2 = 4
-        #1&3, 3&1 * 2 = 4
-        #2&3. 2&3 = 2
-        #total of 13 children 
+            print(f"Best resouce Strategy: {best_of_population[0]}")
+            print(f"Best attack strategy: {best_of_population[1]}")
+            print("")
+ 

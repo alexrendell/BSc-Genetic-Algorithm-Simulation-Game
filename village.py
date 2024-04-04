@@ -10,7 +10,7 @@ class Village:
         self.resource_balance = resources
         self.resource_income = ({"food":0,"wood":0,"stone":0,"metal":0,"gold":0})
         self.owned_buildings = []
-        self.attack_output = ({"Strength":0,"speed":0,"adaptability":0,"special ability":0})
+        self.attack_output = ({"strength":0,"speed":0,"adaptability":0,"special ability":0})
         self.owned_troops = []
         
         #Add the amount of workers to the list of owned buildings
@@ -36,7 +36,7 @@ class Village:
                 self.resource_balance[resource] -= cost
             
             for stat, output in troop.attack_output.items():
-                self.attack_output[stat] += output            #here somewhere
+                self.attack_output[stat] += output  
             
             self.owned_troops.append(troop)
             
@@ -74,8 +74,21 @@ class Village:
             for resource in self.resource_balance:
                 self.resource_balance[resource] = 0
     
-    #def attack(self, troop_list):
-       
+    def total_attack(self):
+        total_attack = 0
+        #strenght, speed, adaptability, special ability
+        stat_weight = (1.25, 1.25, 1.25, 1.25)
+        for stat, amount in self.attack_output.items():
+           if stat == "strenght":
+               total_attack += (amount * stat_weight[0])
+           elif stat == "speed":
+               total_attack += (amount * stat_weight[1])
+           elif stat == "adaptability":
+               total_attack += (amount * stat_weight[2])
+           elif stat == "special ability":
+               total_attack += (amount * stat_weight[3])
+                    
+        return total_attack
        
     def total_resources(self):
         total_resource = 0
@@ -90,7 +103,6 @@ class Village:
                 total_resource += (amount * 5)
             elif name == "gold":
                 total_resource += (amount * 100)
-                
                 
         return total_resource
     
