@@ -4,6 +4,7 @@ import buildings
 import troops
 import numpy.random as npr
 import copy
+import upgrades
 
 class Algorithm:
     #Strategy is the amount of moves / buildings that can be bought
@@ -14,6 +15,7 @@ class Algorithm:
         self.generations = generations
         self.all_buildings = buildings.all_buildings
         self.all_troops = troops.all_troops
+        self.all_upgrades = upgrades.all_upgrades
         self.starting_resources = starting_resources
         self.starting_workers = starting_workers
         self.i = 0
@@ -24,15 +26,27 @@ class Algorithm:
             #Generate random strategy of length turns (the number of turns)
             #choices picks random elements from the all_buildings list (picks self.turn amount of elements)
             #The stategy is now a list of the index of the building
-            building_strategy = [self.all_buildings.index(building) for building in random.choices(self.all_buildings, k=self.resource_turns)]
+            
+            building_strategy = []
+            
+            for building in range(self.resource_turns):
+                action = random.randint(0,1)
+                if action == 0:
+                    building_number = random.randint(0, len(self.all_buildings)-1)
+                    building_strategy.append((0, building_number))
+                else:
+                    upgrade_number = random.randint(0, len(self.all_upgrades)-1)
+                    building_strategy.append((1, upgrade_number))
+            
+            #building_strategy = [self.all_buildings.index(building) for building in random.choices(self.all_buildings, k=self.resource_turns)]
             troop_strategy = [self.all_troops.index(troop) for troop in random.choices(self.all_troops, k=self.attack_turns)] 
             #Add the strategy to a child and add the child to the population
             population.append((building_strategy,troop_strategy))
+            
         return population
     
     def evaluate_fitness(self, strategy):
         total_resources = 0
-        
         building_strategy = strategy[0]
         troop_strategy = strategy[1]
         
@@ -93,15 +107,24 @@ class Algorithm:
         mutated_troop_strategy = strategy[1].copy()
         #Loops through all the buildings in strategy
         for building in range(len(mutated_building_strategy)):
+            # If mutaiton occurs it changes the action
             if random.random() < mutation_rate:
-                #changes one of the buildings in strategy to another random building
-                mutated_building_strategy[building] = random.choice(range(len(self.all_buildings)))
+                action, value = mutated_building_strategy[building]
+                if action == 1:
+                    action = 0
+                    value = random.choice(range(len(self.all_buildings)))
+                else:
+                    action = 1
+                    value = random.choice(range(len(self.all_upgrades)))
+                mutated_building_strategy[building] = (action, value)
+                    
         
         for troop in range(len(mutated_troop_strategy)):
             if random.random() < mutation_rate:
                 mutated_troop_strategy[troop] = random.choice(range(len(self.all_troops)))
         
         mutated_strategy = (mutated_building_strategy, mutated_troop_strategy )  
+        
         
         return mutated_strategy
     

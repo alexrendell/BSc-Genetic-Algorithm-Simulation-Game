@@ -7,7 +7,7 @@ def main():
     test_generation = Algorithm(40, #Number of resource gathering turns
                                 20, #Number of attacking turns
                                 50, #Population size
-                                100, #Number of generations
+                                1000, #Number of generations
                                 ({"food":0,"wood":0,"stone":0,"metal":0,"gold":0}), #Starting resources
                                 5) #Starting workers
     # Mutation rate, Tournament selection sizes
