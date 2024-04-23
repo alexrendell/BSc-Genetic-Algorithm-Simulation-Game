@@ -20,6 +20,9 @@ class Village:
         self.drill = False
         self.gasoline = False
         self.golden_pickaxe = False
+        self.all_upgrades = [self.stronger_legs, self.trade_routes, self.fertilizer, self.drill, self.gasoline, self.golden_pickaxe]
+        self.total_resource = 0
+        self.count = 0
         
         #Add the amount of workers to the list of owned buildings
         for buy_workers in range(workers):
@@ -50,18 +53,14 @@ class Village:
             
             #If agent cant buy building it gets punished (promiting the skip building)
         else:
-            for resource in self.resource_balance:
-                self.resource_balance[resource] = 0
+            for stat in self.attack_output:
+                self.attack_output[stat] *= 0.9
                     
     #Purchasing a building
     def buy_building(self, building_number):
         # Adds the income to their balance
         for resource, cost in self.resource_income.items():   #This should be amount not cost.
             self.resource_balance[resource] += self.resource_income[resource]
-        
-        action, number = building_number
-        if action == 1 and number >= 6:
-            print("Error at:",building_number)
         
         #Building
         if building_number[0] == 0:
@@ -86,22 +85,25 @@ class Village:
                 #If agent cant buy building it gets punished (promiting the skip building)
             else:
                 for resource in self.resource_balance:
-                    self.resource_balance[resource] = 0
+                    self.resource_balance[resource] *= 0.9
         
         #Upgrading
         else:
-
             upgrade = upgrades.all_upgrades[building_number[1]]
             
             if all(self.resource_balance[resource] >= upgrade.cost[resource] 
                 for resource in upgrade.cost):
                 #Deducts the cost of the building
-                for resource, cost in building.cost.items(): #.items returns the pair 
+                for resource, cost in upgrade.cost.items(): #.items returns the pair 
                     self.resource_balance[resource] -= cost
                 
                 self.owned_upgrades.append(upgrade)
                 
-                self.apply_upgrade(upgrade)   
+                self.apply_upgrade(upgrade)  
+            
+            else:
+                for resource in self.resource_balance:
+                    self.resource_balance[resource] *= 0.9
                 
     
     def total_attack(self):
@@ -109,15 +111,17 @@ class Village:
         #strenght, speed, adaptability, special ability
         stat_weight = (1.25, 1.25, 1.25, 1.25)
         for stat, amount in self.attack_output.items():
-           if stat == "strenght":
+            #print (f"stat: {stat}, amount: {amount}")
+            if stat == "strenght":
                total_attack += (amount * stat_weight[0])
-           elif stat == "speed":
+            elif stat == "speed":
                total_attack += (amount * stat_weight[1])
-           elif stat == "adaptability":
+            elif stat == "adaptability":
                total_attack += (amount * stat_weight[2])
-           elif stat == "special ability":
+            elif stat == "special ability":
                total_attack += (amount * stat_weight[3])
                     
+        #print(total_attack)
         return total_attack
        
     def total_resources(self):
@@ -133,6 +137,8 @@ class Village:
                 total_resource += (amount * 5)
             elif name == "gold":
                 total_resource += (amount * 100)
+            
+            #print(total_resource)
                 
         return total_resource
     
@@ -161,22 +167,23 @@ class Village:
         
         # Turns to 0 decimal places
         total_resource = int(total_resource)
+        
+        self.total_resources = total_resource
                                                                                                                                                                                                                                                                                                                                                     
         return total_resource
     
     def apply_upgrade(self, upgrade):
-        for name in upgrade:
-            if name == "Stronger Legs":
+            if upgrade.name == "Stronger Legs":
                 self.stronger_legs = True
-            if name == "Trade Routes":
+            if upgrade.name == "Trade Routes":
                 self.trade_routes = True
-            if name == "Fertilizer":
+            if upgrade.name == "Fertilizer":
                 self.fertilizer = True
-            if name == "Drill":
+            if upgrade.name == "Drill":
                 self.drill = True
-            if name == "Gasoline":
+            if upgrade.name == "Gasoline":
                 self.gasoline = True 
-            if name == "Golden Pickaxe":
+            if upgrade.name == "Golden Pickaxe":
                 self.golden_pickaxe = True 
         
     def get_defence(self):
@@ -201,3 +208,20 @@ class Village:
     
     def get_gold(self):
         return self.resource_balance["gold"]
+    
+    def get_upgrades(self):
+        upgrade_list = {
+            "Stronger Legs": self.stronger_legs,
+            "Trade Routes": self.trade_routes,
+            "Fertilizer": self.fertilizer,
+            "Drill": self.drill,
+            "Gasoline": self.gasoline,
+            "Golden Pickaxe": self.gasoline
+        }
+        return upgrade_list
+    
+    def get_total_resource(self):
+        return self.total_resource
+    
+    def get_count(self):
+        return self.count
