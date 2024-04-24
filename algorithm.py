@@ -252,19 +252,19 @@ class Algorithm:
             print(f"Food: {best_food}, Wood: {best_wood}, Stone: {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
             print(f"Best resouce strategy: {best_of_population[0]}")
             print(f"Best attack strategy: {best_of_population[1]}")
-            #print(f"Upgrades aquired: {best_village.get_upgrades()}")
+            print(f"Upgrades aquired: {best_village.get_upgrades()}")
             print("")
             
             if self.current_best == None or best_fitness > self.current_best:
                 self.current_best = best_fitness
         
-        print(f"total res: {res}")
-        print(f"total attack: {att}")
-        print()
+            print(f"total res: {res}")
+            print(f"total attack: {att}")
+            print()
         
-        if generation % 20 ==0:
-            with open("test.csv","a") as file:
-                file.write(str(best_fitness))        
+            if generation % 20 ==0:
+                with open("tou=5_pun=10%_mut=5%.csv","a") as file:
+                    file.write(f"{best_fitness}\n")        
         
         print(f"Best Fitness Overall: {self.current_best}")
             

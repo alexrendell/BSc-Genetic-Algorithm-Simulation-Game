@@ -3,9 +3,9 @@ from algorithm import Algorithm
 
 def main():
     
-    #Generation parameters:
-    test_generation = Algorithm(20, #Number of resource gathering turns
-                                10, #Number of attacking turns
+    #Generation parameters: 
+    test_generation = Algorithm(100, #Number of resource gathering turns
+                                50, #Number of attacking turns
                                 40, #Population size
                                 10000, #Number of generations
                                 ({"food":10,"wood":10,"stone":10,"metal":0,"gold":0}), #Starting resources

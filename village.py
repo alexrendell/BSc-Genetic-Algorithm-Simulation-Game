@@ -130,13 +130,13 @@ class Village:
             if name == "food":
                 total_resource += amount
             elif name == "wood":
-                total_resource += (amount * 1.5)
+                total_resource += (amount)
             elif name == "stone":
-                total_resource += (amount * 2)
+                total_resource += (amount)
             elif name == "metal":
-                total_resource += (amount * 5)
+                total_resource += (amount)
             elif name == "gold":
-                total_resource += (amount * 100)
+                total_resource += (amount * 1.5)
             
             #print(total_resource)
                 
