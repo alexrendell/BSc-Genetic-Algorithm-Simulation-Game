@@ -36,14 +36,15 @@ class Village:
                 self.resource_balance[resource] -= cost
             
             for stat, output in troop.attack_output.items():
-                self.attack_output[stat] += output  
+                self.attack_output[stat] += output
+                print(output)  
             
             self.owned_troops.append(troop)
             
             #If agent cant buy building it gets punished (promiting the skip building)
         else:
             for resource in self.resource_balance:
-                self.resource_balance[resource] *= 0.5
+                self.resource_balance[resource] * 0.5
                     
     #Purchasing a building
     def buy_building(self, building_number):
@@ -79,15 +80,18 @@ class Village:
         #strenght, speed, adaptability, special ability
         stat_weight = (1.25, 1.25, 1.25, 1.25)
         for stat, amount in self.attack_output.items():
-           if stat == "strenght":
+           if stat == "strength":
                total_attack += (amount * stat_weight[0])
-               print("here")
+               #print("strenght",amount)
            elif stat == "speed":
                total_attack += (amount * stat_weight[1])
+               #print("speed",amount)
            elif stat == "adaptability":
                total_attack += (amount * stat_weight[2])
+               #print("adaptability", amount)
            elif stat == "special ability":
                total_attack += (amount * stat_weight[3])
+               #print("special ability", amount)
                     
         return total_attack
        
@@ -106,6 +110,7 @@ class Village:
                 total_resource += (amount * 100)
                 
         return total_resource
+    
     
 
     def attacking_and_defence(self,building):
