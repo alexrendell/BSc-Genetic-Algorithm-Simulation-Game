@@ -245,6 +245,8 @@ class Algorithm:
             best_gold = best_village.get_gold()
             best_attack = best_village.get_attack()
             best_defence = best_village.get_defence()
+            res = best_village.total_resources()
+            att = best_village.total_attack()
             
             print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
             print(f"Food: {best_food}, Wood: {best_wood}, Stone: {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
@@ -255,6 +257,14 @@ class Algorithm:
             
             if self.current_best == None or best_fitness > self.current_best:
                 self.current_best = best_fitness
+        
+        print(f"total res: {res}")
+        print(f"total attack: {att}")
+        print()
+        
+        if generation % 20 ==0:
+            with open("test.csv","a") as file:
+                file.write(str(best_fitness))        
         
         print(f"Best Fitness Overall: {self.current_best}")
             
