@@ -223,10 +223,13 @@ class Algorithm:
             best_gold = best_village.get_gold()
             best_attack = best_village.get_attack()
             best_defence = best_village.get_defence()
+            total_defence = best_village.total_resources()
+            total_attack = best_village.total_attack()
             
             print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
             print(f"Food: {best_food}, Wood: {best_wood}, Stone: {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
             print(f"Best resouce Strategy: {best_of_population[0]}")
             print(f"Best attack strategy: {best_of_population[1]}")
-            print("")
+            print(f"total defence: {total_defence}")
+            print(f"total attack: {total_attack}")
  
