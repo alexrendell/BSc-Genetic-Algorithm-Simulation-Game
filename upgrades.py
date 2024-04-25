@@ -5,15 +5,15 @@ class Upgrade:
 
 all_upgrades = [
     Upgrade("Stronger Legs",
-             {"food": 0, "wood":0, "stone":0, "metal":0, "gold": 1}),
+             {"food": 500, "wood":500, "stone":500, "metal":500, "gold": 1}),
     Upgrade("Trade Routes",
-             {"food":0, "wood":0, "stone":0, "metal":0, "gold":3}),
+             {"food":1000, "wood":1000, "stone":1000, "metal":1000, "gold":3}),
     Upgrade("Fertilizer",
-             {"food":0, "wood":0, "stone":0, "metal":0, "gold":5}),
+             {"food":1500, "wood":1500, "stone":1500, "metal":1500, "gold":5}),
     Upgrade("Drill",
-             {"food":0, "wood":0, "stone":0, "metal":0, "gold":8}),
+             {"food":2000, "wood":2000, "stone":2000, "metal":2000, "gold":8}),
     Upgrade("Gasoline", 
-             {"food":0, "wood":0, "stone":0, "metal":0, "gold":10}),
+             {"food":2500, "wood":2500, "stone":2500, "metal":2500, "gold":10}),
     Upgrade("Golden Pickaxe", 
-             {"food":0, "wood":0, "stone":0, "metal":0, "gold":15})
+             {"food":3000, "wood":3000, "stone":3000, "metal":3000, "gold":15})
 ]

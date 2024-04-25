@@ -54,7 +54,8 @@ class Village:
             #If agent cant buy building it gets punished (promiting the skip building)
         else:
             for stat in self.attack_output:
-                self.attack_output[stat] *= 0.9
+                self.attack_output[stat] *= 0.2
+                    
                     
     #Purchasing a building
     def buy_building(self, building_number):
@@ -85,7 +86,7 @@ class Village:
                 #If agent cant buy building it gets punished (promiting the skip building)
             else:
                 for resource in self.resource_balance:
-                    self.resource_balance[resource] *= 0.9
+                    self.resource_balance[resource] *= 0.2
         
         #Upgrading
         else:
@@ -103,7 +104,7 @@ class Village:
             
             else:
                 for resource in self.resource_balance:
-                    self.resource_balance[resource] *= 0.9
+                    self.resource_balance[resource] *= 0.2
                 
     
     def total_attack(self):

@@ -262,8 +262,8 @@ class Algorithm:
             print(f"total attack: {att}")
             print()
         
-            if generation % 20 ==0:
-                with open("tou=5_pun=10%_mut=5%.csv","a") as file:
+            if generation % 10 ==0:
+                with open("tou=20_pun=80%_mut=0,0.06%_pop=50_res=60_att=30.csv","a") as file:
                     file.write(f"{best_fitness}\n")        
         
         print(f"Best Fitness Overall: {self.current_best}")
