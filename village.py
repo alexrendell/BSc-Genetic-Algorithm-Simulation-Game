@@ -21,8 +21,6 @@ class Village:
             self.owned_buildings.append(building)
             
         self.turn = 0
-        self.defensive_strength = 100
-        self.attacking_power = 100 
        
     #Purchasing a troop 
     def buy_troop(self, troop_number):
@@ -43,7 +41,7 @@ class Village:
             #If agent cant buy building it gets punished (promiting the skip building)
         else:
             for resource in self.resource_balance:
-                self.resource_balance[resource] = 0
+                self.resource_balance[resource] *= 0.80
                     
     #Purchasing a building
     def buy_building(self, building_number):
@@ -65,17 +63,13 @@ class Village:
             for resource, output in building.resource_output.items():
                 self.resource_income[resource] += output            #here somewhere
             
-            self.attacking_and_defence(building)
-            
             self.owned_buildings.append(building)
             
             #If agent cant buy building it gets punished (promiting the skip building)
         else:
             for resource in self.resource_balance:
-                self.resource_balance[resource] = 0
+                self.resource_balance[resource] *= 0.80
     
-    #def attack(self, troop_list):
-       
        
     def total_resources(self):
         total_resource = 0
@@ -91,13 +85,22 @@ class Village:
             elif name == "gold":
                 total_resource += (amount * 100)
                 
-                
         return total_resource
     
-
-    def attacking_and_defence(self,building):
-        self.attacking_power += building.attacking_power
-        self.defensive_strength += building.defensive_strength
+    def total_attack(self):
+        total_attack = 0
+        for name, amount in self.attack_output.items():
+            if name == "Strength":
+                total_attack += (amount)
+            elif name == "speed":
+                total_attack += (amount)
+            elif name == "adaptability":
+                total_attack += (amount)
+            elif name == "special ability":
+                total_attack += (amount)
+            
+        return total_attack
+    
         
     def total_fitness(self):
         total_resource = 0
@@ -121,6 +124,7 @@ class Village:
         total_resource = int(total_resource)
                                                                                                                                                                                                                                                                                                                                                     
         return total_resource
+    
     
     def get_defence(self):
         best_defence = self.defensive_strength

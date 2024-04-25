@@ -53,9 +53,11 @@ class Algorithm:
         #Attack phase
         #temp_village.attac
         
+        res = temp_village.total_resources()
+        power = temp_village.total_attack()
         
+        total_resources = res + power
         
-        total_resources = temp_village.total_fitness()
         return total_resources
     
     #Selects parents for crossover base don their fitness
@@ -219,13 +221,16 @@ class Algorithm:
             best_stone = best_village.get_stone()
             best_metal = best_village.get_metal()
             best_gold = best_village.get_gold()
-            best_attack = best_village.get_attack()
-            best_defence = best_village.get_defence()
+            resources = best_village.total_resources()
+            power = best_village.total_attack()
             
-            print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
+            print(f"Generation {generation+1}, Fitness: {best_fitness}")
             print(f"Food: {best_food}, Wood: {best_wood}, Stone: {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
-            print(f"Best resouce Strategy: {best_of_population[0]}, Best attack strategy: {best_of_population[1]}")
-
+            print(f"Best resouce Strategy: {best_of_population[0]}")
+            print(f"Best attack strategy: {best_of_population[1]}")
+            print(f"Total resources: {resources}")
+            print(f"Total power: {power}")
+            print()
     
         
             

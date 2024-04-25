@@ -26,16 +26,8 @@ all_buildings = [
     Building("Forge",
              {"food":150, "wood":200, "stone":80},
              {"food":2, "wood":2, "stone":4, "metal":20}),
-    #Building("Defence",
-             #{"food":100},
-             #{},
-             #0,1),
-    #Building("Attack",
-             #{"food":100},
-             #{},
-             #1,0),
     Building("Op",
-              {"metal":1000},
+              {},
               {"food":0, "wood":0, "stone":0, "metal":0, "gold":100}),
 ]
 
