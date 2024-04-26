@@ -191,14 +191,14 @@ class Algorithm:
             best_stone = best_village.get_stone()
             best_metal = best_village.get_metal()
             best_gold = best_village.get_gold()
-            best_attack = best_village.get_attack()
-            best_defence = best_village.get_defence()
             
-            print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
+            print(f"Generation {generation+1}, Fitness: {best_fitness}")
             print(f"Food, {best_food}, Wood, {best_wood}, Stone, {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
-            print(best_of_population)
-
-    
+            print(best_of_population)    
+            
+            if generation %2==1:
+                with open("MutationAt5%.csv", "a") as file:
+                    file.write(f"{generation} , {best_fitness}\n")
         
             
         

@@ -18,8 +18,6 @@ class Village:
             self.owned_buildings.append(building)
             
         self.turn = 0
-        self.defensive_strength = 100
-        self.attacking_power = 100 
         
     #Purchasing a building
     def buy_building(self, building_number):
@@ -41,8 +39,6 @@ class Village:
             # Adds the output of the building to the village income
             for resource, output in building.resource_output.items():
                 self.resource_income[resource] += output            #here somewhere
-            
-            self.attacking_and_defence(building)
             
             self.owned_buildings.append(building)
             
@@ -69,41 +65,15 @@ class Village:
                 
         return total_resource
     
-
-    def attacking_and_defence(self,building):
-        self.attacking_power += building.attacking_power
-        self.defensive_strength += building.defensive_strength
         
     def total_fitness(self):
         total_resource = 0
         total_resource = self.total_resources()
         
-        #Attack to gain extra resources (100 attacking power maximum)
-        if self.attacking_power > 100:
-            total_resource += total_resource * 2
-        else:
-            attack_score = self.attacking_power/100
-            total_resource += total_resource * (1 + (attack_score))
-        
-        # Defend to lose less resources
-        if self.defensive_strength > 100:
-            total_resource += total_resource * 1
-        else:
-            defence_score = self.defensive_strength/100
-            total_resource = defence_score * total_resource
-        
         # Turns to 0 decimal places
         total_resource = int(total_resource)
                                                                                                                                                                                                                                                                                                                                                     
         return total_resource
-    
-    def get_defence(self):
-        best_defence = self.defensive_strength
-        return best_defence
-    
-    def get_attack(self):
-        best_attack = self.attacking_power
-        return best_attack
     
     def get_food(self):
         return self.resource_balance["food"]
