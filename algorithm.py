@@ -197,7 +197,7 @@ class Algorithm:
             print(best_of_population)    
             
             if generation %2==1:
-                with open("MutationAt5%.csv", "a") as file:
+                with open("torunament.csv", "a") as file:
                     file.write(f"{generation} , {best_fitness}\n")
         
             
