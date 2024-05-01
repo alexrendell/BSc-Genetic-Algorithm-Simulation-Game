@@ -29,8 +29,6 @@ all_buildings = [
     Building("Gold Mine",
              {"food":200, "wood":250, "stone":100, "metal":50},
              {"food":0, "wood":0, "stone":0, "metal":5, "gold":1}),
-    #Building("Op",
-              #{"metal":0},
-              #{"food":50, "wood":50, "stone":50, "metal":50, "gold":50}),
+    
 ]
 

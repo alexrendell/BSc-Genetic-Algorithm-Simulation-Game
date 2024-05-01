@@ -1,10 +1,10 @@
-from resources import Resources
 import buildings as buildings
 import troops as troops
 import upgrades as upgrades
 
 
 class Village:
+    #Initialise village attributes
     def __init__(self, name, resources, workers):
         self.name = name
         self.workers = workers
@@ -39,13 +39,13 @@ class Village:
     def buy_troop(self, troop_number):
         
         troop = troops.all_troops[troop_number]
-        
+        #Checks if agent has enough resrouces
         if all(self.resource_balance[resource] >= troop.cost[resource]
                for resource in troop.cost):
-            
+            #Deducts cost
             for resource, cost in troop.cost.items():
                 self.resource_balance[resource] -= cost
-            
+            #Adds the trupes cost
             for stat, output in troop.attack_output.items():
                 self.attack_output[stat] += output  
             
@@ -53,6 +53,7 @@ class Village:
             
             #If agent cant buy building it gets punished (promiting the skip building)
         else:
+            #If resources are insufficient the attack is reduced
             for stat in self.attack_output:
                 self.attack_output[stat] *= 0.2
                     
@@ -63,10 +64,8 @@ class Village:
         for resource, cost in self.resource_income.items():   #This should be amount not cost.
             self.resource_balance[resource] += self.resource_income[resource]
         
-        #Building
         if building_number[0] == 0:
-        
-            #Retruns building getting bought
+    
             building = buildings.all_buildings[building_number[1]]
             #Check if village has enough resources
             if all(self.resource_balance[resource] >= building.cost[resource] 
@@ -88,7 +87,7 @@ class Village:
                 for resource in self.resource_balance:
                     self.resource_balance[resource] *= 0.2
         
-        #Upgrading
+        #Purchasing an upgrade
         else:
             upgrade = upgrades.all_upgrades[building_number[1]]
             
@@ -106,13 +105,12 @@ class Village:
                 for resource in self.resource_balance:
                     self.resource_balance[resource] *= 0.2
                 
-    
+    #calulate the total attck
     def total_attack(self):
         total_attack = 0
-        #strenght, speed, adaptability, special ability
+        #Weights for each stat
         stat_weight = (1.25, 1.25, 1.25, 1.25)
         for stat, amount in self.attack_output.items():
-            #print (f"stat: {stat}, amount: {amount}")
             if stat == "strenght":
                total_attack += (amount * stat_weight[0])
             elif stat == "speed":
@@ -122,9 +120,9 @@ class Village:
             elif stat == "special ability":
                total_attack += (amount * stat_weight[3])
                     
-        #print(total_attack)
         return total_attack
-       
+    
+    #Calculates total resources
     def total_resources(self):
         total_resource = 0
         for name, amount in self.resource_balance.items():
@@ -148,31 +146,30 @@ class Village:
         self.attacking_power += building.attacking_power
         self.defensive_strength += building.defensive_strength
         
+    #Calculates totalfitness (not in use)
     def total_fitness(self):
         total_resource = 0
         total_resource = self.total_resources()
         
-        #Attack to gain extra resources (100 attacking power maximum)
         if self.attacking_power > 100:
             total_resource += total_resource * 2
         else:
             attack_score = self.attacking_power/100
             total_resource += total_resource * (1 + (attack_score))
         
-        # Defend to lose less resources
         if self.defensive_strength > 100:
             total_resource += total_resource * 1
         else:
             defence_score = self.defensive_strength/100
             total_resource = defence_score * total_resource
-        
-        # Turns to 0 decimal places
+
         total_resource = int(total_resource)
         
         self.total_resources = total_resource
                                                                                                                                                                                                                                                                                                                                                     
         return total_resource
     
+    #Applying an upgrade 
     def apply_upgrade(self, upgrade):
             if upgrade.name == "Stronger Legs":
                 self.stronger_legs = True

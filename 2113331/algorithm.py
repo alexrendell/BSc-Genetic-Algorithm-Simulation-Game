@@ -7,7 +7,7 @@ import copy
 import upgrades
 
 class Algorithm:
-    #Strategy is the amount of moves / buildings that can be bought
+    #Initialised the genetic algorithm
     def __init__(self, resource_turns, attack_turns, population_size, generations, starting_resources, starting_workers):  #Change strategy to turns 
         self.resource_turns = resource_turns
         self.attack_turns = attack_turns
@@ -69,9 +69,8 @@ class Algorithm:
         fitness = (total_resources * 0.25) + (total_attack * 0.75)
         return fitness
     
-    #Selects parents for crossover base don their fitness
+    #Selects parents for crossover base don their fitness 
     def select_parents(self, population, num_parents):
-        #Use all individuals in the population as parents
         parents = population
         #Sort strategies based on fittness in decending order
         parents.sort(key=lambda building_strategy: self.evaluate_fitness(building_strategy))
@@ -121,7 +120,7 @@ class Algorithm:
         
         return mutated_strategy
     
-    #Combines oarents through crossover and muation
+    #Combines oarents through crossover and muation (Not used)
     def evolve_population(self, current_population, mutation_rate):
         
         new_population = []
@@ -175,19 +174,10 @@ class Algorithm:
             # Randomly select tournament_size individuals from the population
             tournament_parents = random.sample(current_population, tournament_size)
             
-            #Use the tournament strategy
-            #building_strategies = [parent[0] for parent in tournament_parents]
-            
             tournament_fitness = [self.evaluate_fitness(potential_parent) for potential_parent in tournament_parents]
             
-            # Evaluate the fitness of each individual in the tournament
-            # tournament_fitness = [self.evaluate_fitness(building_strategy) for building_strategy in building_strategies]
-        
             # Select the individual with the highest fitness as the parent
             parent = tournament_parents[tournament_fitness.index(max(tournament_fitness))]
-        
-            # Add the selected parent to the list
-            # selected_parents.append(selected_parent)
     
         return parent
     
@@ -243,12 +233,8 @@ class Algorithm:
             best_stone = best_village.get_stone()
             best_metal = best_village.get_metal()
             best_gold = best_village.get_gold()
-            best_attack = best_village.get_attack()
-            best_defence = best_village.get_defence()
-            res = best_village.total_resources()
-            att = best_village.total_attack()
             
-            print(f"Generation {generation+1}, Fitness: {best_fitness}, Attack: {best_attack}, Defence: {best_defence}")
+            print(f"Generation {generation+1}, Fitness: {best_fitness}")
             print(f"Food: {best_food}, Wood: {best_wood}, Stone: {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
             print(f"Best resouce strategy: {best_of_population[0]}")
             print(f"Best attack strategy: {best_of_population[1]}")
@@ -258,11 +244,8 @@ class Algorithm:
             if self.current_best == None or best_fitness > self.current_best:
                 self.current_best = best_fitness
         
-            print(f"total res: {res}")
-            print(f"total attack: {att}")
-            print()
-        
-            if generation % 10 ==0:
+            #Adds each two generations fitenss to a file
+            if generation %2 ==0:
                 with open("tou=20_pun=80%_mut=0,0.06%_pop=50_res=60_att=30.csv","a") as file:
                     file.write(f"{best_fitness}\n")        
         

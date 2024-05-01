@@ -13,10 +13,5 @@ def main():
     # Mutation rate, Tournament selection sizes
     test_generation.run_genetic_algorithm(0.06,10)
     
-    print(test_generation)
-    
 if __name__ == "__main__":
     main()
-
-
-# Command + / - to comment and uncomment
