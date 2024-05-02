@@ -82,11 +82,14 @@ class Algorithm:
     
     #Preforms crossover to create a new offspring
     def crossover(self, parent1, parent2):
+        #Gets the crossover point
         building_crossover_point = random.randint(1, len(parent1[0]) -1)
         troop_crossover_point = random.randint(1, len(parent1[1]) -1)
+        
         #Combining segments from both parents
         child_building = parent1[0][:building_crossover_point]+ parent2[0][building_crossover_point:]
         child_troop = parent1[1][:troop_crossover_point]+ parent2[1][troop_crossover_point:]
+        
         #Combine both segments into a single new agent
         child = (child_building, child_troop)
         return child
@@ -110,13 +113,13 @@ class Algorithm:
                     value = random.choice(range(len(self.all_upgrades)))
                 mutated_building_strategy[building] = (action, value)
                     
-        
+        #Loops through all troops in strategy
         for troop in range(len(mutated_troop_strategy)):
             if random.random() < mutation_rate:
                 mutated_troop_strategy[troop] = random.choice(range(len(self.all_troops)))
         
+        #Combines mutatated strategies together
         mutated_strategy = (mutated_building_strategy, mutated_troop_strategy )  
-        
         
         return mutated_strategy
     
@@ -164,7 +167,8 @@ class Algorithm:
         probability = [fitness / total_fitness for fitness in highest_first_fitness]
         #Choose a single agent from popualtion 
         return current_population[npr.choice(len(current_population), p=probability)]
-        
+    
+    #Seleciton method using tournaments and probablility
     def tournament_selection(self, current_population, tournament_size):
         # selected_parents = []
         population_size = len(current_population)
