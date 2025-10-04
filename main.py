@@ -2,13 +2,15 @@ from village import Village
 from algorithm import Algorithm
 
 def main():
-    print("##########################")
     
     #Generation parameters:
-    #number or turns, population size, maximum number of generations, starting resources, starting workers
-    test_generation = Algorithm(10, 20, 1000, 300, 10)
-    # Mutation rate
-    test_generation.run_genetic_algorithm(0.05)
+    test_generation = Algorithm(100, #Number of turns
+                                40, #Population size
+                                500, #Number of generations
+                                ({"food":0,"wood":0,"stone":0,"metal":0,"gold":0}), #Starting resources
+                                5) #Starting workers
+    # Mutation rate, Tournament selection sizes
+    test_generation.run_genetic_algorithm(0.01,5)
     
     print(test_generation)
     

@@ -1,25 +1,36 @@
 class Building:
-    def __init__(self,name,cost,resource_output):
+    def __init__(self,name,cost,resource_output,attacking_power=0,defensive_strength=0):
         self.name = name
         self.cost = cost
         self.resource_output = resource_output
+        self.attacking_power = attacking_power
+        self.defensive_strength = defensive_strength
     
-    
-    
+
 all_buildings = [
-    Building("SKIP", 0, 0), #Does cost or give anything just skips a round insetad of failing to buy a resouce
-    Building("Worker", 20, 3),
-    Building("Farm", 70, 10),
-    Building("mine", 60, 25),
-    Building("Lumber Mill",10, 1000)
+    Building("SKIP",
+             {},
+             {}),
+    Building("Worker",
+             {"food":5,},
+             {"food":2, "wood":1, "stone":1,}),
+    Building("Farm",
+             {"food":20,"wood":10, "stone":10},
+             {"food":10, "wood":4, "stone":2}),
+    Building("Lumber Mill",
+             {"food":50, "wood":100, "stone":25},
+             {"food":2, "wood":20, "stone":4}),
+    Building("Quarry", 
+             {"food":100, "wood":150, "stone":50},
+             {"food":4, "wood":4, "stone":20, "metal":4}),
+    Building("Forge",
+             {"food":150, "wood":200, "stone":80},
+             {"food":2, "wood":2, "stone":4, "metal":20}),
+    Building("Mine",
+              {"food":600, "wood":400, "stone":300, "metal":160,},
+              {"food":0, "wood":0, "stone":0, "metal":0, "gold":1}),
+   # Building("Op",
+              #{"metal":0},
+              #{"food":0, "wood":0, "stone":0, "metal":0, "gold":100}),
 ]
-    
-'''    Multiple resources (maye incorprate later)
-all_buildings = [
-    Building("SKIP", 0, {}), #Does cost or give anything just skips a round insetad of failing to buy a resouce
-    Building("Worker", 20, {"food:":1, "stone":1, "wood":1}),
-    Building("Farm", 70, {"food":5}),
-    Building("mine", 60, {"stone":3}),
-    Building("Lumber Mill", 60, {"wood":4})
-]
-'''
+

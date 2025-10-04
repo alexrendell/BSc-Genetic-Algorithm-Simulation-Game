@@ -6,34 +6,86 @@ class Village:
     def __init__(self, name, resources, workers):
         self.name = name
         self.workers = workers
-        self.resources = resources
+        self.resource_balance = resources
+        self.resource_income = ({"food":0,"wood":0,"stone":0,"metal":0,"gold":0})
         self.owned_buildings = []
+        
         #Add the amount of workers to the list of owned buildings
         for buy_workers in range(workers):
-            self.owned_buildings.append(buildings.all_buildings[1])
+            building = buildings.all_buildings[1]
+            for resource, output in building.resource_output.items():
+                self.resource_income[resource] += output
+            self.owned_buildings.append(building)
+            
         self.turn = 0
         
     #Purchasing a building
     def buy_building(self, building_number):
+        
+        # Adds the income to their balance
+        for resource, cost in self.resource_income.items():
+            self.resource_balance[resource] += self.resource_income[resource]
+        
+        
         #Retruns building getting bought
         building = buildings.all_buildings[building_number]
         #Check if village has enough resources
-        if self.resources >= building.cost:
-            #Deduct cost from village resources
-            self.resources -= building.cost
-            #Add building to list of harvesting buldings
-            self.owned_buildings.append(building)
-            self.resources += building.resource_output
-            # print(f"{self.name} purchased {building.name}")
-        # else:
-            # print(f"{self.name} has insufficient resources to buy {building.name}")
+        if all(self.resource_balance[resource] >= building.cost[resource] 
+               for resource in building.cost):
+            #Deducts the cost of the building
+            for resource, cost in building.cost.items(): #.items returns the pair 
+                self.resource_balance[resource] -= cost
             
-
-
-
-
-    def fire_power(self):
-        return self.att.all_units()
+            # Adds the output of the building to the village income
+            for resource, output in building.resource_output.items():
+                self.resource_income[resource] += output            #here somewhere
+            
+            self.owned_buildings.append(building)
+            
+            #If agent cant buy building it gets punished (promiting the skip building)
+        else:
+            for resource in self.resource_balance:
+                self.resource_balance[resource] = 0
+            
+       
+    def total_resources(self):
+        total_resource = 0
+        for name, amount in self.resource_balance.items():
+            if name == "food":
+                total_resource += amount
+            elif name == "wood":
+                total_resource += (amount * 1.5)
+            elif name == "stone":
+                total_resource += (amount * 2)
+            elif name == "metal":
+                total_resource += (amount * 5)
+            elif name == "gold":
+                total_resource += (amount * 100)
+                
+                
+        return total_resource
     
-    def all_materials(self):
-        return self.res.all_resources()
+        
+    def total_fitness(self):
+        total_resource = 0
+        total_resource = self.total_resources()
+        
+        # Turns to 0 decimal places
+        total_resource = int(total_resource)
+                                                                                                                                                                                                                                                                                                                                                    
+        return total_resource
+    
+    def get_food(self):
+        return self.resource_balance["food"]
+    
+    def get_wood(self):
+        return self.resource_balance["wood"]
+    
+    def get_stone(self):
+        return self.resource_balance["stone"]
+    
+    def get_metal(self):
+        return self.resource_balance["metal"]
+    
+    def get_gold(self):
+        return self.resource_balance["gold"]

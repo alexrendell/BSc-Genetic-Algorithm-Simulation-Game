@@ -2,6 +2,7 @@ import random
 from village import Village
 import buildings
 import numpy.random as npr
+import copy
 
 class Algorithm:
     #Strategy is the amount of moves / buildings that can be bought
@@ -26,45 +27,19 @@ class Algorithm:
         return population
     
     def evaluate_fitness(self, strategy):
-        
         total_resources = 0
+        #Creating a deep copy because i dont want the original starting resources 
+        #to be changed and its a dictionary so it will always reference the original starting_resoruces
+        test_starting_resources = copy.deepcopy(self.starting_resources)
+        test_starting_workers = self.starting_workers
         
-        temp_village = Village("Temp_Village", self.starting_resources, self.starting_workers)
-        
+        temp_village = Village("Temp_Village", test_starting_resources, test_starting_workers)
         for building in strategy:
             temp_village.buy_building(building)
-            
-        total_resources = temp_village.resources
         
+        #total_resources = temp_village.total_resources()
+        total_resources = temp_village.total_fitness()
         return total_resources
-        
-        '''
-        #need to make village return a instance of village class
-        total_resources = 0
-        
-        #Creates a temporary village to simulate strtegy
-        temp_village = Village(f"Village {self.i}", self.starting_resources, self.starting_workers)
-        if self.i == self.population_size:
-            self.i = 0
-        else:
-            self.i += 1
-        
-        #Purchase buildings according to strategy
-        for building_number in strategy:
-            temp_village.buy_building(building_number)
-        
-        #Calculate total resources of all buildings
-        for building in temp_village.owned_buildings:
-                total_resources += building.resource_output
-            
-            
-         find the total resouce when there are multiple
-        #Calculate total resources gathered by temp village  
-        total_resources = sum([building.resource_output.get(resource, 0) 
-                               for building in temp_village.owned_buildings 
-                               for resource in building.resource_output])
-        
-        '''
     
     #Selects parents for crossover base don their fitness
     def select_parents(self, population, num_parents):
@@ -85,24 +60,8 @@ class Algorithm:
         
         child = parent1[:crossover_point] + parent2[crossover_point:]
         
-        '''
-        p1 = parent1[:]
-        p2 = parent2[:]
-        
-        for crossover in range(crossover_point):
-            p1[crossover], p2[crossover] = p2[crossover], p1[crossover]
-        '''    
-        
         return child
         
-        
-        '''
-        #Randomly selects a point from the range 1 to length -1
-        crossover_point = random.randint(1, len(parent1) - 1)
-        #The begining of the childs stretegy up to the crossover point is from parent 1 and the rest is from parent 2
-        child = parent1[:crossover_point] + parent2[crossover_point:]
-        return child
-        '''
     
     #Apply mutation to a strategy
     def mutate(self, strategy, mutation_rate):
@@ -161,16 +120,35 @@ class Algorithm:
         
         return current_population[npr.choice(len(current_population), p=probability)]
         
+    def tournament_selection(self, current_population, tournament_size):
+        # selected_parents = []
+        population_size = len(current_population)
+    
+        # Perform tournament selection for each parent
+        for _ in range(population_size):
+            # Randomly select tournament_size individuals from the population
+            tournament_parents = random.sample(current_population, tournament_size)
+        
+            # Evaluate the fitness of each individual in the tournament
+            tournament_fitness = [self.evaluate_fitness(potential_parent) for potential_parent in tournament_parents]
+        
+            # Select the individual with the highest fitness as the parent
+            parent = tournament_parents[tournament_fitness.index(max(tournament_fitness))]
+        
+            # Add the selected parent to the list
+            # selected_parents.append(selected_parent)
+    
+        return parent
+        
+    
         
      #Starting the genetic algorithm
     #None means that the parameter is optional
-    def run_genetic_algorithm(self, mutation_rate):
-        
+    def run_genetic_algorithm(self, mutation_rate, tournament_size):
+        self.tournament_size = tournament_size
         self.mutation_rate = mutation_rate
-                    
 
         current_population = self.initialize_population()
-        print(len(current_population))
        
         #Loop over each generation
         for generation in range(self.generations):
@@ -179,8 +157,13 @@ class Algorithm:
             for agent in range (len(current_population)):
                 
                 # Step 1: Select two parents using the roulette wheel
-                parent_1 = self.roulette_wheel(current_population)
-                parent_2 = self.roulette_wheel(current_population)
+                
+                # Step:1.2 Select two parents using the tournament seleciton
+                parent_1 = self.tournament_selection(current_population, tournament_size)
+                parent_2 = self.tournament_selection(current_population, tournament_size)
+                
+                # parent_1 = self.roulette_wheel(current_population)
+                # parent_2 = self.roulette_wheel(current_population)
                 
                 # Step 2: Create a new child with the two parents
                 child = self.crossover(parent_1, parent_2)
@@ -194,10 +177,28 @@ class Algorithm:
             
             best_of_population = max(current_population, key=lambda agent: self.evaluate_fitness(agent))
             
-            print(f"Generation {generation+1}, Best fitness: {self.evaluate_fitness(best_of_population)}")
-            print(best_of_population)
-            print("∑∑∑∑∑∑∑∑∑", len(current_population))
-    
+            
+            test_starting_resources = copy.deepcopy(self.starting_resources)
+            test_starting_workers = self.starting_workers
+            
+            best_village = Village("Best Village", test_starting_resources, test_starting_workers)
+            for building in best_of_population:
+                best_village.buy_building(building)
+            
+            best_fitness = self.evaluate_fitness(best_of_population)
+            best_food = best_village.get_food()
+            best_wood = best_village.get_wood()
+            best_stone = best_village.get_stone()
+            best_metal = best_village.get_metal()
+            best_gold = best_village.get_gold()
+            
+            print(f"Generation {generation+1}, Fitness: {best_fitness}")
+            print(f"Food, {best_food}, Wood, {best_wood}, Stone, {best_stone}, Metal: {best_metal}, Gold: {best_gold}")
+            print(best_of_population)    
+            
+            if generation %2==1:
+                with open("Fair.csv", "a") as file:
+                    file.write(f"{generation} , {best_fitness}\n")
         
             
         
